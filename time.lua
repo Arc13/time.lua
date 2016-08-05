@@ -144,7 +144,9 @@ function getWorldMoonPhase()
 		nDateMod = 8
 	end
 
-	return nDateMod, tPhasesEn[nDateMod], tPhasesFr[nDateMod]
+	if nDateMod and tPhasesEn[nDateMod] and tPhasesFr[nDateMod] then
+		return nDateMod, tPhasesEn[nDateMod], tPhasesFr[nDateMod]
+	end
 end
 
 function getRealMinutes()
