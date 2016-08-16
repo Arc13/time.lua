@@ -1,5 +1,3 @@
-local server = "http://ip_du_serveur/time.php"
-
 function getWorldTime()
 	return os.time()
 end
@@ -136,70 +134,87 @@ function getWorldMinutes()
 end
 
 function getWorldMoonPhase()
-	local nDateMod = os.day() % 8
-	local tPhasesEn = {"Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent", "New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous"}
-	local tPhasesFr = {"Pleine Lune", "Lune Gibbeuse", "Dernier Quartier", "Dernier Croissant", "Nouvelle Lune", "Premier Croissant", "Premier Quartier", "Lune Gibbeuse"}
-	
-	if nDateMod == 0 then
-		nDateMod = 8
-	end
+    local nDateMod = os.day() % 8
+    local tPhasesEn = {"Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent", "New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous"}
+    local tPhasesFr = {"Pleine Lune", "Lune Gibbeuse", "Dernier Quartier", "Dernier Croissant", "Nouvelle Lune", "Premier Croissant", "Premier Quartier", "Lune Gibbeuse"}
 
-	if nDateMod and tPhasesEn[nDateMod] and tPhasesFr[nDateMod] then
-		return nDateMod, tPhasesEn[nDateMod], tPhasesFr[nDateMod]
-	end
+    if nDateMod == 0 then
+        nDateMod = 8
+    end
+
+    if nDateMod and tPhasesEn[nDateMod] and tPhasesFr[nDateMod] then
+        return nDateMod, tPhasesEn[nDateMod], tPhasesFr[nDateMod]
+    end
 end
 
 function getRealMinutes()
-	response = http.get(server.."?req=minutes")
+	response = http.get("http://www.timeapi.org/utc/now?format=%25M")
 	text = response.readAll()
 	response.close()
 	return text
 end
 
 function getRealHours()
-	response = http.get(server.."?req=hours")
+	response = http.get("http://www.timeapi.org/utc/now?format=%25H")
 	text = response.readAll()
 	response.close()
+	text = tonumber(text)
+	text = text + 1
+	text = text % 24
+
+	if text <= 9 and text >= 0 then
+		text = "0"..text
+	end
+
+	text = tostring(text)
+
 	return text
 end
 
 function getRealSeconds()
-	response = http.get(server.."?req=seconds")
+	response = http.get("http://www.timeapi.org/utc/now?format=%25S")
 	text = response.readAll()
 	response.close()
 	return text
 end
 
 function getRealWeekDay()
-	response = http.get(server.."?req=wday")
+	response = http.get("http://www.timeapi.org/utc/now?format=%25u")
 	text = response.readAll()
 	response.close()
 	return text
 end
 
 function getRealMonthDay()
-	response = http.get(server.."?req=mday")
+	response = http.get("http://www.timeapi.org/utc/now?format=%25d")
 	text = response.readAll()
 	response.close()
 	return text
 end
 
 function getRealYear()
-	response = http.get(server.."?req=year")
+	response = http.get("http://www.timeapi.org/utc/now?format=%25Y")
 	text = response.readAll()
 	response.close()
 	return text
 end
 
 function getRealYearDay()
-	response = http.get(server.."?req=yday")
+	response = http.get("http://www.timeapi.org/utc/now?format=%25j")
 	text = response.readAll()
 	response.close()
 	return text
 end
 
 function getRealMonth()
-	response = http.get(server.."?req=mon")
+	response = http.get("http://www.timeapi.org/utc/now?format=%25m")
+	text = response.readAll()
+	response.close()
+	return text
+end
+
+function getRealMilliseconds()
+	response = http.get("http://www.timeapi.org/utc/now?format=%25L")
 	text = response.readAll()
 	response.close()
 	return text
