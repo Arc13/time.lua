@@ -173,51 +173,64 @@ end
 
 function getRealSeconds()
 	response = http.get("http://www.timeapi.org/utc/now?format=%25S")
-	text = response.readAll()
-	response.close()
-	return text
+	if response then
+		text = response.readAll()
+		response.close()
+		return text
+	end
 end
 
 function getRealWeekDay()
 	response = http.get("http://www.timeapi.org/utc/now?format=%25u")
-	text = response.readAll()
-	response.close()
-	return text
+	if response then
+		text = response.readAll()
+		response.close()
+		return text
+	end
 end
 
 function getRealMonthDay()
 	response = http.get("http://www.timeapi.org/utc/now?format=%25d")
-	text = response.readAll()
-	response.close()
-	return text
+	if response then
+		text = response.readAll()
+		response.close()
+		return text
+	end
 end
 
 function getRealYear()
 	response = http.get("http://www.timeapi.org/utc/now?format=%25Y")
-	text = response.readAll()
-	response.close()
-	return text
+	if response then
+		text = response.readAll()
+		response.close()
+		return text
+	end
 end
 
 function getRealYearDay()
 	response = http.get("http://www.timeapi.org/utc/now?format=%25j")
-	text = response.readAll()
-	response.close()
-	return text
+	if response then
+		text = response.readAll()
+		response.close()
+		return text
+	end
 end
 
 function getRealMonth()
-	response = http.get("http://www.timeapi.org/utc/now?format=%25m")
-	text = response.readAll()
-	response.close()
-	return text
+	if response then
+		text = response.readAll()
+		response.close()
+		return text
+	end
 end
 
 function getRealMilliseconds()
 	response = http.get("http://www.timeapi.org/utc/now?format=%25L")
-	text = response.readAll()
-	response.close()
-	return text
+	if response then
+		text = response.readAll()
+		response.close()
+		return text
+	end
 end
 
 function getWorldComplete(sep)
@@ -262,7 +275,7 @@ function getWorldMonth()
 	month = os.day() / 30
 	month = month % 12
 
-	return tablemonth[math.floor(month + 1)]
+	return tablemonth[math.floor(month + 1)], math.floor(month + 1)
 end
 
 function getWorldDate()
@@ -465,4 +478,28 @@ function getDaylightOutputInversedThunder()
 	else
 		return 15
 	end
+end
+
+function timestampToDate(nTimestamp)
+	if not nTimestamp or type(nTimestamp) ~= "number" then
+		return false, "timestampToDate(number timestamp)"
+	end
+
+	sTs = http.get("http://www.convert-unix-time.com/api?format=german&timezone=paris&timestamp="..nTimestamp)
+	jTsJson = sTs.readAll()
+	sTs.close()
+
+	return string.sub(jTsJson, 15, 33)
+end
+
+function getRealCompleteDate(sSeparator)
+	sSeparator = sSeparator or "/"
+
+	return getRealMonthDay()..sSeparator..getRealMonth()..sSeparator..getRealYear()
+end
+
+function getWorldCompleteDate(sSeparator)
+	sSeparator = sSeparator or "/"
+
+	return getWorldDate()..sSeparator..table.pack(getWorldMonth())[2]..sSeparator..getWorldYear()
 end
