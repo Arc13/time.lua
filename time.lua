@@ -148,88 +148,113 @@ function getWorldMoonPhase()
 end
 
 function getRealMinutes()
-	response = http.get("http://www.timeapi.org/utc/now?format=%25M")
-	text = response.readAll()
-	response.close()
-	return text
-end
+	local response = http.get("http://www.timeapi.org/utc/now?format=%25M")
 
-function getRealHours()
-	response = http.get("http://www.timeapi.org/utc/now?format=%25H")
-	text = response.readAll()
-	response.close()
-	text = tonumber(text)
-	text = text + 1
-	text = text % 24
-
-	if text <= 9 and text >= 0 then
-		text = "0"..text
-	end
-
-	text = tostring(text)
-
-	return text
-end
-
-function getRealSeconds()
-	response = http.get("http://www.timeapi.org/utc/now?format=%25S")
 	if response then
 		text = response.readAll()
 		response.close()
 		return text
+	else
+		return false
+	end
+end
+
+function getRealHours()
+	local response = http.get("http://www.timeapi.org/utc/now?format=%25H")
+
+	if response then
+		text = response.readAll()
+		response.close()
+		text = tonumber(text)
+		text = text + 1
+		text = text % 24
+
+		if text <= 9 and text >= 0 then
+			text = "0"..text
+		end
+
+		text = tostring(text)
+
+		return text
+	else
+		return false
+	end
+end
+
+function getRealSeconds()
+	local response = http.get("http://www.timeapi.org/utc/now?format=%25S")
+	if response then
+		text = response.readAll()
+		response.close()
+		return text
+	else
+		return false
 	end
 end
 
 function getRealWeekDay()
-	response = http.get("http://www.timeapi.org/utc/now?format=%25u")
+	local response = http.get("http://www.timeapi.org/utc/now?format=%25u")
 	if response then
 		text = response.readAll()
 		response.close()
 		return text
+	else
+		return false
 	end
 end
 
 function getRealMonthDay()
-	response = http.get("http://www.timeapi.org/utc/now?format=%25d")
+	local response = http.get("http://www.timeapi.org/utc/now?format=%25d")
 	if response then
 		text = response.readAll()
 		response.close()
 		return text
+	else
+		return false
 	end
 end
 
 function getRealYear()
-	response = http.get("http://www.timeapi.org/utc/now?format=%25Y")
+	local response = http.get("http://www.timeapi.org/utc/now?format=%25Y")
 	if response then
 		text = response.readAll()
 		response.close()
 		return text
+	else
+		return false
 	end
 end
 
 function getRealYearDay()
-	response = http.get("http://www.timeapi.org/utc/now?format=%25j")
+	local response = http.get("http://www.timeapi.org/utc/now?format=%25j")
 	if response then
 		text = response.readAll()
 		response.close()
 		return text
+	else
+		return false
 	end
 end
 
 function getRealMonth()
+	local response = http.get("http://www.timeapi.org/utc/now?format=%25m")
 	if response then
 		text = response.readAll()
 		response.close()
 		return text
+	else
+		return false
 	end
 end
 
 function getRealMilliseconds()
-	response = http.get("http://www.timeapi.org/utc/now?format=%25L")
+	local response = http.get("http://www.timeapi.org/utc/now?format=%25L")
 	if response then
 		text = response.readAll()
 		response.close()
 		return text
+	else
+		return false
 	end
 end
 
@@ -258,28 +283,28 @@ function getRealComplete(sep, secs, sepSec)
 end
 
 function getWorldYear()
-	year = os.day() / 360
+	local year = os.day() / 360
 
 	return math.floor(year)
 end
 
 function getWorldWeekDay()
-	tablewday = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
-	wday = os.day() % 7
+	local tablewday = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
+	local wday = os.day() % 7
 
 	return tablewday[wday + 1]
 end
 
 function getWorldMonth()
-	tablemonth = {"January", "February", "March", "April", "May", "June", "July", "August", "Spetember", "October", "November", "December"}
-	month = os.day() / 30
-	month = month % 12
+	local tablemonth = {"January", "February", "March", "April", "May", "June", "July", "August", "Spetember", "October", "November", "December"}
+	local month = os.day() / 30
+	local month = month % 12
 
 	return tablemonth[math.floor(month + 1)], math.floor(month + 1)
 end
 
 function getWorldDate()
-	date = os.day() % 30
+	local date = os.day() % 30
 
 	return date + 1
 end
@@ -493,13 +518,23 @@ function timestampToDate(nTimestamp)
 end
 
 function getRealCompleteDate(sSeparator)
-	sSeparator = sSeparator or "/"
+	local sSeparator = sSeparator or "/"
 
-	return getRealMonthDay()..sSeparator..getRealMonth()..sSeparator..getRealYear()
+	local MonthDay = getRealMonthDay()
+	local Month = getRealMonth()
+	local Year = getRealYear()
+
+	while not MonthDay or not Month or not Year do
+		local MonthDay = getRealMonthDay()
+		local Month = getRealMonth()
+		local Year = getRealYear()
+	end
+
+	return MonthDay..sSeparator..Month..sSeparator..Year
 end
 
 function getWorldCompleteDate(sSeparator)
-	sSeparator = sSeparator or "/"
+	local sSeparator = sSeparator or "/"
 
 	return getWorldDate()..sSeparator..table.pack(getWorldMonth())[2]..sSeparator..getWorldYear()
 end
